@@ -639,13 +639,12 @@
 <pre class="prompt" id="prompt-text"><span class="k">ROLE</span>
 Rewrite the candidate's CV to maximize their chance of passing both ATS keyword
 screens and a recruiter's 6-second scan, for the supplied job description.
-Never lie.
 
 <span class="k">INPUTS</span>
 [CV]: <span class="ph">&lt;paste candidate's current CV verbatim&gt;</span>
 [JD]: <span class="ph">&lt;paste target job description verbatim&gt;</span>
 
-<span class="k">TRUTH BOUNDARY</span> (non-negotiable)
+<span class="k">TRUTH BOUNDARY</span>
 - Use only facts present in [CV]. Do not invent or upgrade employers, titles,
   dates, degrees, licenses, certifications, clients, tools, metrics, scope,
   headcount, budgets, ownership, or outcomes.
@@ -669,9 +668,9 @@ falsification flags. Instead append a section titled `VERIFICATION QUEUE`
 after the CV, listing each inferred item as: `[ ] verify: &lt;claim&gt; — implied
 by: &lt;source CV line&gt;`. The candidate confirms or removes before submitting.
 
-<span class="k">FIT BRIEF</span> (for the candidate's eyes only — never submitted)
+<span class="k">FIT BRIEF</span> (for the candidate's eyes only)
 After the CV (and after the VERIFICATION QUEUE if present), append a final
-section titled `FIT BRIEF — DO NOT SUBMIT`. This is candid, no-flattery
+section titled `FIT BRIEF — DO NOT SUBMIT`. This is a candid, brutally honest
 diagnosis to help the candidate decide whether to apply and how to position.
 
 - `Strengths` (3–7 bullets): where [CV] genuinely meets or exceeds a [JD]
@@ -689,10 +688,10 @@ diagnosis to help the candidate decide whether to apply and how to position.
   closeable before this application).
 - `Overall fit`: one verdict — `strong fit`, `stretch`, `long shot`, or
   `wrong target` — followed by one sentence of reasoning grounded in the
-  Strengths and Gaps above. No hedging.
+  Strengths and Gaps above.
 - `Positioning`: 1–2 sentences on how to open the cover letter or the
-  first interview moment to neutralize the top-ranked gap. Specific
-  phrasing, not platitudes.
+  first interview moment to neutralize the top-ranked gap. Concrete
+  phrasing the candidate can adapt directly.
 
 This section is diagnostic only. The candidate deletes it entirely before
 submitting the CV. Never place any Fit Brief content inside the CV body.
@@ -778,7 +777,7 @@ No preamble, no commentary, no diff between sections.</pre>
     <p style="font-size:9.5pt;color:var(--muted);font-family:var(--sans);margin-top:-2px">After resolving, delete the <code>VERIFICATION QUEUE</code> section before submitting.</p>
 
     <h3>Reading the Fit Brief</h3>
-    <p>The Fit Brief is the only section the model writes <em>for you</em> rather than for the recruiter. Treat it as a five-minute coaching session — calibrate your effort before you spend hours polishing a cover letter for the wrong role.</p>
+    <p>The Fit Brief is the only section the model writes <em>for you</em> rather than for the recruiter. Expect a <strong>candid, brutally honest</strong> read — flattery would defeat the point. Treat it as a five-minute coaching session: calibrate your effort before you spend hours polishing a cover letter for the wrong role.</p>
 
     <div class="verdicts keep">
       <div class="verdict strong">
@@ -801,9 +800,9 @@ No preamble, no commentary, no diff between sections.</pre>
       </div>
       <div class="verdict wrong">
         <span class="v-label">wrong target</span>
-        Core requirements aren't there. Cover letter cannot save this.
+        Core requirements aren't there. A cover letter is unlikely to close the gap.
         <span class="v-do">Do</span>
-        Skip. Find a closer-fit JD; this one will burn goodwill.
+        Look for a closer-fit JD before investing time on this one.
       </div>
     </div>
 
@@ -926,7 +925,7 @@ No preamble, no commentary, no diff between sections.</pre>
 
   <footer class="doc-footer">
     <span class="mark">CV Tuning Prompt</span>
-    <span>Use as-is. Truth is the differentiator.</span>
+    <span>A reusable prompt for tuning a CV to a specific job description.</span>
   </footer>
 
 </main>
