@@ -219,6 +219,46 @@
     white-space: pre-wrap;
     word-wrap: break-word;
   }
+
+  /* --- Copy-to-clipboard button --- */
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #cdd3da;
+    background: #fff;
+    color: var(--ink-soft);
+    font-family: var(--sans);
+    font-size: 8.5pt;
+    font-weight: 600;
+    letter-spacing: .02em;
+    padding: 4px 10px 4px 8px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .12s ease, color .12s ease, border-color .12s ease, transform .08s ease;
+    user-select: none;
+    line-height: 1;
+  }
+  .copy-btn:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .copy-btn:active { transform: translateY(1px); }
+  .copy-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .copy-btn .copy-icon,
+  .copy-btn .check-icon { flex: 0 0 auto; }
+  .copy-btn .check-icon { display: none; color: #fff; }
+  .copy-btn.copied {
+    background: var(--ok);
+    color: #fff;
+    border-color: var(--ok);
+  }
+  .copy-btn.copied .copy-icon { display: none; }
+  .copy-btn.copied .check-icon { display: inline-block; }
   pre.prompt .k {
     color: var(--accent);
     font-weight: 600;
@@ -542,6 +582,7 @@
     h2 { margin-top: 22pt; }
     .actions, .signals { gap: 8px; }
     .doc-footer { position: running(footer); }
+    .copy-btn { display: none !important; }
   }
 </style>
 </head>
@@ -584,9 +625,18 @@
       <div class="prompt-head">
         <span><span class="dot"></span><span class="dot" style="background:#d6dae0"></span><span class="dot" style="background:#e5e8ec"></span></span>
         <span class="label">Paste verbatim into your LLM of choice</span>
-        <span style="font-family:var(--mono);font-size:8pt">prompt.txt</span>
+        <button type="button" class="copy-btn" data-copy-target="prompt-text" aria-label="Copy prompt to clipboard">
+          <svg class="copy-icon" width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <rect x="4" y="4" width="9" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M3 11.5V3.5C3 2.67 3.67 2 4.5 2H11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          <svg class="check-icon" width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8.5L6.5 12L13 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="copy-text">Copy prompt</span>
+        </button>
       </div>
-<pre class="prompt"><span class="k">ROLE</span>
+<pre class="prompt" id="prompt-text"><span class="k">ROLE</span>
 Rewrite the candidate's CV to maximize their chance of passing both ATS keyword
 screens and a recruiter's 6-second scan, for the supplied job description.
 Never lie.
@@ -880,6 +930,54 @@ No preamble, no commentary, no diff between sections.</pre>
   </footer>
 
 </main>
+
+<script>
+  (function () {
+    var btn = document.querySelector('.copy-btn[data-copy-target]');
+    if (!btn) return;
+    var target = document.getElementById(btn.getAttribute('data-copy-target'));
+    if (!target) return;
+    var label = btn.querySelector('.copy-text');
+    var defaultText = label ? label.textContent : '';
+    var resetTimer;
+
+    function flash(text, ok) {
+      if (label) label.textContent = text;
+      btn.classList.toggle('copied', !!ok);
+      clearTimeout(resetTimer);
+      resetTimer = setTimeout(function () {
+        if (label) label.textContent = defaultText;
+        btn.classList.remove('copied');
+      }, 1800);
+    }
+
+    btn.addEventListener('click', function () {
+      var text = target.innerText;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(
+          function () { flash('Copied', true); },
+          function () { fallback(text); }
+        );
+      } else {
+        fallback(text);
+      }
+    });
+
+    function fallback(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'absolute';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      flash(ok ? 'Copied' : 'Press ⌘C', ok);
+    }
+  })();
+</script>
 
 </body>
 </html>
