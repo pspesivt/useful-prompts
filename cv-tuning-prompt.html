@@ -1,0 +1,885 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CV Tuning Prompt — A Reusable Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #14191f;
+    --ink-soft:   #3a4452;
+    --muted:      #6b7480;
+    --rule:       #e3e6ea;
+    --rule-soft:  #eef0f3;
+    --bg:         #ffffff;
+    --paper:      #fbfaf7;
+    --accent:     #1b3a5b;
+    --accent-tint:#eef3f8;
+    --warn:       #8a5a00;
+    --warn-tint:  #fff5dc;
+    --ok:         #1f5e3a;
+    --ok-tint:    #e8f3ec;
+    --code-bg:    #f6f7f9;
+    --code-rule:  #e3e6ea;
+    --serif:      "Source Serif 4", Charter, "Iowan Old Style", Georgia, serif;
+    --sans:       "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono:       "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { background: #ececec; }
+  body {
+    font-family: var(--serif);
+    color: var(--ink);
+    font-size: 11pt;
+    line-height: 1.55;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* On-screen "paper" preview */
+  .page {
+    background: var(--bg);
+    max-width: 800px;
+    margin: 32px auto;
+    padding: 56px 64px 64px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.06), 0 16px 40px rgba(0,0,0,.08);
+    border-radius: 2px;
+  }
+
+  /* --- Cover header --- */
+  .cover {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 28px;
+    margin-bottom: 36px;
+  }
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 8.5pt;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+  h1.title {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 28pt;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin: 0 0 14px;
+    color: var(--ink);
+  }
+  .lede {
+    font-family: var(--serif);
+    font-size: 12.5pt;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+    max-width: 62ch;
+  }
+  .lede strong { color: var(--ink); font-weight: 600; }
+
+  .domain-row {
+    font-family: var(--sans);
+    font-size: 8.5pt;
+    color: var(--muted);
+    letter-spacing: .02em;
+  }
+  .domain-row .label {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--ink-soft);
+    margin-right: 8px;
+  }
+  .chips {
+    display: inline;
+  }
+  .chip {
+    display: inline-block;
+    padding: 1px 8px;
+    margin: 2px 4px 2px 0;
+    background: var(--accent-tint);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 8pt;
+    font-weight: 500;
+  }
+
+  /* --- Typography --- */
+  h2 {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 16pt;
+    margin: 36px 0 14px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--ink);
+    letter-spacing: -0.005em;
+    color: var(--ink);
+  }
+  h3 {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 11.5pt;
+    margin: 22px 0 8px;
+    color: var(--ink);
+    letter-spacing: 0;
+  }
+  p { margin: 0 0 10px; }
+  p, li { hyphens: auto; }
+
+  /* --- Quick start --- */
+  .quickstart {
+    counter-reset: qs;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 22px;
+  }
+  .quickstart li {
+    counter-increment: qs;
+    position: relative;
+    padding: 6px 4px 6px 34px;
+    font-family: var(--sans);
+    font-size: 10pt;
+    line-height: 1.45;
+    color: var(--ink-soft);
+  }
+  .quickstart li::before {
+    content: counter(qs);
+    position: absolute;
+    left: 0;
+    top: 4px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+    font-size: 9pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .quickstart code {
+    font-family: var(--mono);
+    font-size: 8.5pt;
+    background: var(--code-bg);
+    padding: 1px 4px;
+    border-radius: 3px;
+    color: var(--ink);
+  }
+
+  /* --- Prompt block --- */
+  .prompt-wrap {
+    border: 1px solid var(--code-rule);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 14px 0 6px;
+    background: var(--code-bg);
+    break-inside: auto;
+  }
+  .prompt-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    background: #eef0f3;
+    border-bottom: 1px solid var(--code-rule);
+    font-family: var(--sans);
+    font-size: 8.5pt;
+    color: var(--muted);
+    letter-spacing: .04em;
+  }
+  .prompt-head .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #c5cad1; display:inline-block; margin-right:5px;
+  }
+  .prompt-head .label {
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    letter-spacing: .12em;
+  }
+  pre.prompt {
+    margin: 0;
+    padding: 16px 18px 18px;
+    font-family: var(--mono);
+    font-size: 8.7pt;
+    line-height: 1.55;
+    color: var(--ink);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  pre.prompt .k {
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: .04em;
+  }
+  pre.prompt .ph {
+    background: var(--warn-tint);
+    color: var(--warn);
+    padding: 0 3px;
+    border-radius: 2px;
+    font-weight: 500;
+  }
+
+  /* --- Inline code --- */
+  code {
+    font-family: var(--mono);
+    font-size: 9.2pt;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--ink);
+  }
+
+  /* --- Callouts --- */
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-tint);
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-family: var(--sans);
+    font-size: 10pt;
+    line-height: 1.5;
+    border-radius: 0 4px 4px 0;
+  }
+  .callout.warn {
+    border-left-color: var(--warn);
+    background: var(--warn-tint);
+  }
+  .callout strong { color: var(--ink); }
+
+  /* --- Tables --- */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-family: var(--sans);
+    font-size: 9.8pt;
+  }
+  thead th {
+    text-align: left;
+    padding: 8px 10px;
+    background: #f3f5f7;
+    border-bottom: 1.5px solid var(--ink);
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 9pt;
+    letter-spacing: .02em;
+  }
+  tbody td {
+    padding: 9px 10px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    color: var(--ink-soft);
+  }
+  tbody td strong { color: var(--ink); font-weight: 600; }
+  tbody tr:last-child td { border-bottom: none; }
+
+  /* --- Action cards (Verification Queue) --- */
+  .actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 14px 0;
+  }
+  .action {
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--accent);
+    padding: 12px 14px 14px;
+    border-radius: 0 0 4px 4px;
+    font-family: var(--sans);
+    font-size: 9.5pt;
+    line-height: 1.45;
+    background: #fff;
+  }
+  .action.soften { border-top-color: #b58a2a; }
+  .action.remove { border-top-color: #9c3434; }
+  .action .verb {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 10.5pt;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 4px;
+    letter-spacing: -0.005em;
+  }
+  .action .when {
+    color: var(--muted);
+    font-size: 8.5pt;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    font-weight: 600;
+    margin-top: 8px;
+    display: block;
+  }
+  .action .when-text { color: var(--ink-soft); font-size: 9.5pt; }
+
+  /* --- Signal pills --- */
+  .signals {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 14px 0;
+  }
+  .signal {
+    padding: 12px 14px;
+    border-radius: 4px;
+    font-family: var(--sans);
+    font-size: 9.8pt;
+    line-height: 1.45;
+  }
+  .signal.good { background: var(--ok-tint); border-left: 3px solid var(--ok); }
+  .signal.warn { background: var(--warn-tint); border-left: 3px solid var(--warn); }
+  .signal .tag {
+    font-weight: 700;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 4px;
+    font-size: 9.5pt;
+  }
+  .signal ol { margin: 6px 0 0 18px; padding: 0; }
+  .signal li { margin: 2px 0; color: var(--ink-soft); }
+
+  /* --- Verdict strip (Fit Brief) --- */
+  .verdicts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin: 14px 0 16px;
+  }
+  .verdict {
+    padding: 10px 12px 11px;
+    border-radius: 4px;
+    font-family: var(--sans);
+    font-size: 9.4pt;
+    line-height: 1.4;
+    border: 1px solid transparent;
+    background: #fff;
+  }
+  .verdict .v-label {
+    display: block;
+    font-weight: 700;
+    font-size: 9.5pt;
+    color: var(--ink);
+    margin-bottom: 2px;
+    letter-spacing: -0.005em;
+  }
+  .verdict .v-do {
+    display: block;
+    font-size: 8.4pt;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: .1em;
+    margin: 6px 0 2px;
+  }
+  .verdict.strong  { background: var(--ok-tint);     border-color: #cfe3d7; }
+  .verdict.strong  .v-label { color: var(--ok); }
+  .verdict.stretch { background: var(--accent-tint); border-color: #d6e1ec; }
+  .verdict.stretch .v-label { color: var(--accent); }
+  .verdict.longshot{ background: var(--warn-tint);   border-color: #efddae; }
+  .verdict.longshot .v-label { color: var(--warn); }
+  .verdict.wrong   { background: #fbeaea;            border-color: #ecc6c6; }
+  .verdict.wrong   .v-label { color: #9c3434; }
+
+  /* Fit-brief sub-section grid */
+  .brief-grid {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    margin: 12px 0 4px;
+    font-family: var(--sans);
+    font-size: 9.8pt;
+  }
+  .brief-grid .bg-k,
+  .brief-grid .bg-v {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .brief-grid .bg-k {
+    font-weight: 700;
+    color: var(--ink);
+    background: #fafbfc;
+    letter-spacing: -0.005em;
+  }
+  .brief-grid .bg-v { color: var(--ink-soft); }
+  .brief-grid code { font-size: 8.8pt; }
+
+  /* --- Checklist --- */
+  ul.check {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+    font-family: var(--sans);
+    font-size: 9.8pt;
+  }
+  ul.check li {
+    position: relative;
+    padding: 5px 0 5px 24px;
+    border-bottom: 1px dashed var(--rule-soft);
+    color: var(--ink-soft);
+  }
+  ul.check li:last-child { border-bottom: none; }
+  ul.check li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 9px;
+    width: 13px; height: 13px;
+    border: 1.5px solid var(--ink-soft);
+    border-radius: 2px;
+    background: #fff;
+  }
+
+  /* --- "NOT do" list --- */
+  ul.nope {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+    font-family: var(--sans);
+    font-size: 10pt;
+  }
+  ul.nope li {
+    position: relative;
+    padding: 4px 0 4px 22px;
+    color: var(--ink-soft);
+  }
+  ul.nope li::before {
+    content: "✕";
+    position: absolute;
+    left: 2px; top: 4px;
+    color: #9c3434;
+    font-weight: 700;
+    font-size: 10pt;
+  }
+
+  /* --- Numbered limitations --- */
+  ol.limits {
+    counter-reset: lim;
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+  }
+  ol.limits > li {
+    counter-increment: lim;
+    position: relative;
+    padding: 10px 0 10px 42px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--serif);
+    font-size: 10.5pt;
+    line-height: 1.5;
+  }
+  ol.limits > li:last-child { border-bottom: 1px solid var(--rule); }
+  ol.limits > li::before {
+    content: counter(lim, decimal-leading-zero);
+    position: absolute;
+    left: 0; top: 11px;
+    font-family: var(--sans);
+    font-size: 10pt;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: .04em;
+  }
+  ol.limits strong { color: var(--ink); }
+
+  /* --- Footer --- */
+  .doc-footer {
+    margin-top: 40px;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--sans);
+    font-size: 8.5pt;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .doc-footer .mark { font-weight: 600; color: var(--ink-soft); letter-spacing: .1em; text-transform: uppercase; }
+
+  /* --- Layout helpers --- */
+  .lead-after { margin-top: 4px; }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  section { break-inside: avoid-page; }
+  .keep { break-inside: avoid-page; }
+  h2, h3 { break-after: avoid-page; }
+  table, .callout, .actions, .signals { break-inside: avoid-page; }
+
+  /* --- Print --- */
+  @page {
+    size: A4;
+    margin: 16mm 16mm 18mm;
+  }
+  @media print {
+    html, body { background: #fff; }
+    .page {
+      box-shadow: none;
+      margin: 0;
+      padding: 0;
+      max-width: none;
+      border-radius: 0;
+    }
+    .prompt-wrap, .callout, table, .action, .signal,
+    .quickstart li::before, .chip {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    pre.prompt { font-size: 8.2pt; }
+    h2 { margin-top: 22pt; }
+    .actions, .signals { gap: 8px; }
+    .doc-footer { position: running(footer); }
+  }
+</style>
+</head>
+<body>
+
+<main class="page">
+
+  <!-- ============ COVER ============ -->
+  <header class="cover">
+    <p class="eyebrow">A reusable LLM prompt · Job-application toolkit</p>
+    <h1 class="title">CV Tuning Prompt</h1>
+    <p class="lede">
+      A single, reusable prompt that takes your <strong>CV</strong> and a <strong>target job description</strong> and returns a fine-tuned CV designed to pass both ATS keyword screens and a recruiter's six-second scan — <strong>without fabrication.</strong>
+    </p>
+    <div class="domain-row">
+      <span class="label">Domain-agnostic</span>
+      <span class="chips">
+        <span class="chip">Tech</span><span class="chip">Healthcare</span><span class="chip">Sales</span><span class="chip">Finance</span><span class="chip">Legal</span><span class="chip">Academia</span><span class="chip">Creative</span><span class="chip">Trades</span><span class="chip">Executive</span><span class="chip">Education</span><span class="chip">Nonprofit</span><span class="chip">Government</span><span class="chip">Retail</span>
+      </span>
+    </div>
+  </header>
+
+  <!-- ============ QUICK START ============ -->
+  <section>
+    <h2>Quick start</h2>
+    <ol class="quickstart">
+      <li>Open Claude, ChatGPT, Gemini, or any frontier LLM.</li>
+      <li>Paste the prompt on the next page.</li>
+      <li>Replace <code>&lt;paste candidate's current CV verbatim&gt;</code> with your CV.</li>
+      <li>Replace <code>&lt;paste target job description verbatim&gt;</code> with the JD.</li>
+      <li>Send. Read the output: the CV, then <code>VERIFICATION QUEUE</code> (if any), then <code>FIT BRIEF — DO NOT SUBMIT</code>.</li>
+      <li>Resolve each <code>[ ] verify:</code> item, read the Fit Brief carefully, then delete both diagnostic sections before submitting.</li>
+    </ol>
+  </section>
+
+  <!-- ============ PROMPT ============ -->
+  <section class="keep">
+    <h2>The prompt</h2>
+    <div class="prompt-wrap">
+      <div class="prompt-head">
+        <span><span class="dot"></span><span class="dot" style="background:#d6dae0"></span><span class="dot" style="background:#e5e8ec"></span></span>
+        <span class="label">Paste verbatim into your LLM of choice</span>
+        <span style="font-family:var(--mono);font-size:8pt">prompt.txt</span>
+      </div>
+<pre class="prompt"><span class="k">ROLE</span>
+Rewrite the candidate's CV to maximize their chance of passing both ATS keyword
+screens and a recruiter's 6-second scan, for the supplied job description.
+Never lie.
+
+<span class="k">INPUTS</span>
+[CV]: <span class="ph">&lt;paste candidate's current CV verbatim&gt;</span>
+[JD]: <span class="ph">&lt;paste target job description verbatim&gt;</span>
+
+<span class="k">TRUTH BOUNDARY</span> (non-negotiable)
+- Use only facts present in [CV]. Do not invent or upgrade employers, titles,
+  dates, degrees, licenses, certifications, clients, tools, metrics, scope,
+  headcount, budgets, ownership, or outcomes.
+- Date precision matches source. If [CV] gives only a year, output only the
+  year. Never invent months.
+- Bound every achievement to the candidate's actual radius of ownership. Team
+  contributions stay contributions ("Wrote broadcast copy for a $10M national
+  campaign"), never become ownership claims ("Led $10M campaign").
+- Use [JD]'s exact phrasing (both noun and verb forms where [JD] uses both)
+  ONLY where [CV] genuinely supports the underlying claim. Where evidence is
+  partial, use the noun form with truthful scope ("Exposure to P&amp;L"); skip the
+  verb form.
+- Prefer active verbs (directed, built, secured, treated, taught, closed).
+  Preserve "supported / assisted / contributed to" where they truthfully
+  describe a collaborative role. Never escalate "supported" to "managed."
+
+<span class="k">INFERENCE MARKER</span>
+If a metric, scope, or credential is plausibly implied by [CV] but not stated,
+do NOT insert it inline — ATS regex can mangle inline brackets and trigger
+falsification flags. Instead append a section titled `VERIFICATION QUEUE`
+after the CV, listing each inferred item as: `[ ] verify: &lt;claim&gt; — implied
+by: &lt;source CV line&gt;`. The candidate confirms or removes before submitting.
+
+<span class="k">FIT BRIEF</span> (for the candidate's eyes only — never submitted)
+After the CV (and after the VERIFICATION QUEUE if present), append a final
+section titled `FIT BRIEF — DO NOT SUBMIT`. This is candid, no-flattery
+diagnosis to help the candidate decide whether to apply and how to position.
+
+- `Strengths` (3–7 bullets): where [CV] genuinely meets or exceeds a [JD]
+  requirement. Each bullet: `&lt;JD requirement&gt; ← &lt;CV evidence: employer,
+  scope, metric, credential, or named project&gt;`. Rank by how load-bearing
+  the strength is for THIS JD, not by how impressive it sounds in isolation.
+- `Gaps` (3–7 bullets): where [JD] asks for something [CV] does not
+  demonstrate, or demonstrates only weakly. Tag each: `[blocker]` (explicit
+  hard requirement — e.g., active license, "5+ years", named tool),
+  `[preferred]` (stated as preferred / strongly desired), or `[nice]`
+  (mentioned but not weighted). For each gap, append one of:
+  `closeable: &lt;specific action&gt;` (a course, cert, sample project, or
+  reframing the candidate can do in days or weeks) or `structural` (years
+  of experience, regulated credential, industry-specific tenure — not
+  closeable before this application).
+- `Overall fit`: one verdict — `strong fit`, `stretch`, `long shot`, or
+  `wrong target` — followed by one sentence of reasoning grounded in the
+  Strengths and Gaps above. No hedging.
+- `Positioning`: 1–2 sentences on how to open the cover letter or the
+  first interview moment to neutralize the top-ranked gap. Specific
+  phrasing, not platitudes.
+
+This section is diagnostic only. The candidate deletes it entirely before
+submitting the CV. Never place any Fit Brief content inside the CV body.
+
+<span class="k">STRUCTURE</span> (ATS-parseable + recruiter-scannable)
+- Plain text. Single column. Reverse-chronological. No tables, columns,
+  graphics, icons, page headers, or footers.
+- Section headers, exact and in this order (omit any with no content):
+  `Summary`, `Skills`, `Experience`, `Education`, `Certifications`, `Licenses`.
+- Top of page 1:
+    1. Candidate name.
+    2. Headline using [JD]'s role title verbatim if [CV] truthfully supports
+       it (no implied license, credential, or seniority); else the closest
+       truthful target-aligned headline still containing JD-relevant keywords.
+    3. 2–3 line Summary naming the candidate's strongest recognizable
+       employers, clients, credentials, or schools, plus ONE candidate-owned
+       quantified achievement relevant to [JD]. No `[verify]` markers here.
+- Each Experience entry header on one atomic line:
+  `Job Title | Employer | City, ST | MM/YYYY – MM/YYYY` (use `Present` for
+  current; use `YYYY – YYYY` if only years are in [CV]).
+- First bullet of every role = scope baseline drawn from [CV]: headcount,
+  budget, caseload, territory, store count, square footage, patient volume,
+  jurisdiction, or comparable scale.
+- Subsequent bullets: past-tense verb → [JD]-relevant noun → directional
+  outcome where stated, named context or scope where not. ≤ 5 bullets per
+  role, ≤ 2 lines each. Cut "responsible for," "duties included."
+- Skills: comma-separated under category labels (e.g.,
+  `Clinical Systems: Epic, Cerner, Meditech`). Spell out acronyms on first
+  use as `Acronym (Full Expansion)` — only where truthful (e.g., RN, CPA,
+  OSHA 30, PMP).
+- Account for gaps &gt; 4 months and tenures &lt; 12 months with one truthful
+  framing line (contract, relocation, layoff, caregiving, licensure pursuit,
+  sabbatical). Silence reads worse than the gap.
+
+<span class="k">KEYWORD DISCIPLINE</span>
+Surface every [JD] term the candidate genuinely demonstrates — in the Skills
+block AND in matching Experience bullets (raw frequency matters for ATS
+scoring). Drop, demote, or compress bullets that are generic, outdated, or
+weakly related to [JD], even if impressive elsewhere.
+
+<span class="k">OUTPUT</span>
+Return, in this exact order: (1) the rewritten CV, (2) `VERIFICATION QUEUE`
+if any inferred items exist, (3) `FIT BRIEF — DO NOT SUBMIT` (always).
+No preamble, no commentary, no diff between sections.</pre>
+    </div>
+  </section>
+
+  <!-- ============ USAGE ============ -->
+  <section>
+    <h2>Usage guidelines</h2>
+
+    <h3>Preparing your inputs</h3>
+    <p><strong>Your CV.</strong> Paste it as verbatim text. Avoid screenshots or PDFs — the model needs to read every word. If your CV is in a complex layout (tables, columns, sidebars), copy the text content only; the prompt will produce a clean ATS-parseable structure regardless of what your source looks like.</p>
+    <p><strong>The job description.</strong> Paste the full text from the posting. Don't summarize — the prompt deconstructs the JD into must-haves, nice-to-haves, implicit competencies, and recurring vocabulary, then mirrors only where your experience genuinely supports it. Truncation costs you keyword hits.</p>
+
+    <h3>Working with the Verification Queue</h3>
+    <p>The output ends with a <code>VERIFICATION QUEUE</code> listing inferred claims the model couldn't confirm from your CV.</p>
+
+    <div class="callout warn">
+      <strong>Do not submit the CV with verification items unresolved.</strong> Treat the queue as a checklist between the model's draft and a real recruiter's inbox.
+    </div>
+
+    <div class="actions">
+      <div class="action">
+        <span class="verb">Confirm</span>
+        Replace the inferred wording with your actual number, scope, or credential.
+        <span class="when">When</span>
+        <span class="when-text">The claim is true and you can back it up.</span>
+      </div>
+      <div class="action soften">
+        <span class="verb">Soften</span>
+        Keep the bullet but remove the unverified number or scope.
+        <span class="when">When</span>
+        <span class="when-text">Directionally true, but you don't have the exact figure.</span>
+      </div>
+      <div class="action remove">
+        <span class="verb">Remove</span>
+        Delete the bullet entirely.
+        <span class="when">When</span>
+        <span class="when-text">The claim isn't true, or you can't defend it in interview.</span>
+      </div>
+    </div>
+    <p style="font-size:9.5pt;color:var(--muted);font-family:var(--sans);margin-top:-2px">After resolving, delete the <code>VERIFICATION QUEUE</code> section before submitting.</p>
+
+    <h3>Reading the Fit Brief</h3>
+    <p>The Fit Brief is the only section the model writes <em>for you</em> rather than for the recruiter. Treat it as a five-minute coaching session — calibrate your effort before you spend hours polishing a cover letter for the wrong role.</p>
+
+    <div class="verdicts keep">
+      <div class="verdict strong">
+        <span class="v-label">strong fit</span>
+        Real, repeated evidence for the core requirements.
+        <span class="v-do">Do</span>
+        Apply now. Polish the cover letter around your top two Strengths.
+      </div>
+      <div class="verdict stretch">
+        <span class="v-label">stretch</span>
+        Most boxes checked; one or two real gaps you can close fast.
+        <span class="v-do">Do</span>
+        Spend a day on the top <code>closeable</code> gap, then apply.
+      </div>
+      <div class="verdict longshot">
+        <span class="v-label">long shot</span>
+        Multiple gaps; at least one is <code>structural</code>.
+        <span class="v-do">Do</span>
+        Apply only if the role is exceptional and you accept low odds.
+      </div>
+      <div class="verdict wrong">
+        <span class="v-label">wrong target</span>
+        Core requirements aren't there. Cover letter cannot save this.
+        <span class="v-do">Do</span>
+        Skip. Find a closer-fit JD; this one will burn goodwill.
+      </div>
+    </div>
+
+    <div class="brief-grid keep">
+      <div class="bg-k">Strengths</div>
+      <div class="bg-v">Your cover-letter opener and first-interview anchors. Pick the top one or two; prepare a 60-second story for each with concrete numbers.</div>
+      <div class="bg-k">Gaps</div>
+      <div class="bg-v">Triage by tag. Every <code>[blocker]</code> is a real risk; if any are <code>structural</code>, reconsider applying. Every <code>closeable</code> gap becomes a one-week prep list — take the course, build the sample, get the recommendation, reframe the bullet.</div>
+      <div class="bg-k">Overall fit</div>
+      <div class="bg-v">A one-word verdict (see strip above) that calibrates how much effort to invest. Take it seriously — the model is more willing than most recruiters to call a stretch a stretch.</div>
+      <div class="bg-k">Positioning</div>
+      <div class="bg-v">A literal opener you can adapt for the cover letter or first interview answer. Drafted specifically to defuse your single biggest objection — use it.</div>
+    </div>
+
+    <h3>Reading the queue length <span style="font-weight:400;color:var(--muted);font-size:9.5pt">— secondary signal</span></h3>
+    <p style="font-size:10pt;color:var(--ink-soft);font-family:var(--sans)">
+      <strong>Short queue (0–3 items):</strong> Your CV substantively matches what the JD asks. Resolve the queue, read the Fit Brief, submit.<br>
+      <strong>Long queue (8+ items):</strong> The model couldn't anchor much of your language to your record. Combined with a <code>stretch</code> or worse verdict above, this is a clear signal — close gaps before applying, or pick a better-fit JD.
+    </p>
+
+    <h3>What this prompt does <em>not</em> do</h3>
+    <ul class="nope">
+      <li>Fabricate credentials, titles, dates, employers, metrics, or ownership claims.</li>
+      <li>Escalate "supported" to "managed" or "team member" to "team lead."</li>
+      <li>Keyword-stuff JD vocabulary your CV doesn't back up.</li>
+      <li>Produce a cover letter, LinkedIn rewrite, or interview prep — only the CV.</li>
+      <li>Hide employment gaps or short tenures — it surfaces them with one truthful framing line each.</li>
+      <li>Decide for you whether to apply — the Fit Brief is a mirror, not a hiring algorithm. It can't weigh intangibles only you can: referrals, growth potential, role flexibility, hiring-team appetite for trainable candidates.</li>
+    </ul>
+
+    <h3>Iteration</h3>
+    <p>If the output isn't quite right, re-run with a targeted addition. Don't rewrite the prompt — append a constraint.</p>
+    <table>
+      <thead>
+        <tr><th style="width:34%">Issue</th><th>Append to prompt</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Output is too long</td><td><code>LENGTH: maximum 2 pages.</code></td></tr>
+        <tr><td>Wrong region's date format</td><td><code>DATES: use DD/MM/YYYY format throughout.</code></td></tr>
+        <tr><td>Need a specific section preserved</td><td><code>PRESERVE: keep the "Publications" section verbatim from [CV].</code></td></tr>
+        <tr><td>Want a different focus</td><td><code>EMPHASIS: prioritize [specific competency] in the Summary.</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Output format check</h3>
+    <p>Before submitting the resulting CV, verify it meets ATS-parser expectations:</p>
+    <ul class="check">
+      <li>Plain text or single-column document — no tables, columns, text boxes, or images.</li>
+      <li>Standard section headers only: <code>Summary</code>, <code>Skills</code>, <code>Experience</code>, <code>Education</code>, <code>Certifications</code>, <code>Licenses</code>.</li>
+      <li>Contact info in the body, not in a page header or footer.</li>
+      <li>Dates in <code>MM/YYYY – MM/YYYY</code> format (or <code>YYYY – YYYY</code> if month is unknown).</li>
+      <li>No <code>[verify:]</code> markers anywhere in the CV body — all moved to, or removed from, the Verification Queue.</li>
+      <li>No <code>FIT BRIEF</code> section anywhere in the submitted file — deleted in full after reading.</li>
+      <li>No <code>VERIFICATION QUEUE</code> section anywhere in the submitted file — deleted in full after resolving.</li>
+      <li>No emoji, icons, or non-ASCII bullets (<code>•</code> is fine; decorative glyphs are not).</li>
+    </ul>
+
+    <h3>Document format for submission</h3>
+    <p>The prompt outputs plain text. For submission, paste into a <code>.docx</code> file (preferred — most ATSes parse Word natively) or save as a text-layer PDF (not image-based). Avoid <code>.pages</code>, <code>.rtf</code>, <code>.odt</code>, or scanned PDFs.</p>
+  </section>
+
+  <!-- ============ STRUCTURE RATIONALE ============ -->
+  <section class="keep">
+    <h2>How the prompt is structured — and why</h2>
+    <p>Each section of the prompt defends against a specific screening risk.</p>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:32%">Section</th>
+          <th>Defends against</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>TRUTH BOUNDARY</strong></td>
+          <td>Interview-stage collapse, reference-check failure, background-verification mismatch, ATS knock-out-question discrepancies.</td>
+        </tr>
+        <tr>
+          <td><strong>INFERENCE MARKER</strong></td>
+          <td>Both fabrication and ATS regex breakage from inline brackets in title or metric fields.</td>
+        </tr>
+        <tr>
+          <td><strong>FIT BRIEF</strong></td>
+          <td>Applying to wrong-fit roles, failing to anticipate the interviewer's #1 objection, underselling a real strength in the cover letter, and burning weeks on closeable gaps you didn't see.</td>
+        </tr>
+        <tr>
+          <td><strong>STRUCTURE</strong></td>
+          <td>Legacy ATS parser failures (Workday, Taleo, iCIMS, Greenhouse, Lever, SuccessFactors, BambooHR) silently dropping sections.</td>
+        </tr>
+        <tr>
+          <td><strong>Top-of-page-1 block</strong></td>
+          <td>Recruiter abandoning the CV in the six-second scan because no JD-relevant signal lands above the fold.</td>
+        </tr>
+        <tr>
+          <td><strong>First scope bullet</strong></td>
+          <td>Hiring manager rejecting the CV at substantive read because role complexity is undefined.</td>
+        </tr>
+        <tr>
+          <td><strong>KEYWORD DISCIPLINE</strong></td>
+          <td>Low ATS match score from missing JD terms in genuine experience.</td>
+        </tr>
+        <tr>
+          <td><strong>OUTPUT</strong></td>
+          <td>Recruiters or ATSes choking on commentary, preamble, or diff markers.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============ LIMITATIONS ============ -->
+  <section class="keep">
+    <h2>Known limitations</h2>
+    <ol class="limits">
+      <li><strong>The prompt cannot manufacture qualifications.</strong> If your real experience doesn't match the JD, the output will reflect that — long Verification Queue, hedged Summary. That's a signal to address the gap, not a flaw in the prompt.</li>
+      <li><strong>ATS behavior varies.</strong> The prompt targets the dominant ATS patterns (Workday, Taleo, iCIMS, Greenhouse, Lever, SuccessFactors). Smaller proprietary systems and newer LLM-based screening tools may behave differently. The structural choices — plain text, standard headers, atomic date lines — are conservative across the field.</li>
+      <li><strong>Headline ↔ title trade-off.</strong> The prompt prefers the JD's verbatim role title in the headline only where truthful. If your record can't legitimately claim the target title (e.g., Staff RN applying for Nurse Manager), the headline becomes the closest truthful alternative — which costs an ATS exact-match hit. This is intentional; faking the title gets you eliminated at interview anyway.</li>
+      <li><strong>The prompt does not optimize for visual design.</strong> Output is plain, parseable, and scannable — not "beautiful." If you need a designed CV (e.g., for a creative-industry portfolio submission), use this prompt's output as the <em>content</em>, then port it to a designed template for the human submission while keeping the plain version for the ATS upload.</li>
+    </ol>
+  </section>
+
+  <footer class="doc-footer">
+    <span class="mark">CV Tuning Prompt</span>
+    <span>Use as-is. Truth is the differentiator.</span>
+  </footer>
+
+</main>
+
+</body>
+</html>

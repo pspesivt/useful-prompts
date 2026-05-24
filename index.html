@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Useful Prompts</title>
+<meta name="description" content="Shareable, print-ready prompt write-ups by Pavel Spesivt." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #14191f;
+    --ink-soft:   #3a4452;
+    --muted:      #6b7480;
+    --rule:       #e3e6ea;
+    --bg:         #ffffff;
+    --accent:     #1b3a5b;
+    --accent-tint:#eef3f8;
+    --serif:      "Source Serif 4", Charter, "Iowan Old Style", Georgia, serif;
+    --sans:       "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #f4f4f1; color: var(--ink); -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--serif); font-size: 12pt; line-height: 1.55; min-height: 100vh; display: flex; flex-direction: column; }
+
+  main {
+    max-width: 720px;
+    width: 100%;
+    margin: 64px auto;
+    padding: 56px 56px 64px;
+    background: var(--bg);
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.05), 0 16px 40px rgba(0,0,0,.07);
+    flex: 1 0 auto;
+  }
+
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 9pt;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+  h1 {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 32pt;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    margin: 0 0 16px;
+  }
+  .lede {
+    color: var(--ink-soft);
+    font-size: 13pt;
+    margin: 0 0 36px;
+    max-width: 56ch;
+  }
+
+  ul.list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--rule);
+  }
+  ul.list li {
+    border-bottom: 1px solid var(--rule);
+  }
+  ul.list a {
+    display: block;
+    padding: 22px 4px 22px 0;
+    text-decoration: none;
+    color: var(--ink);
+    position: relative;
+    transition: background .15s ease, padding .15s ease;
+  }
+  ul.list a:hover {
+    background: var(--accent-tint);
+    padding-left: 14px;
+  }
+  ul.list a::after {
+    content: "→";
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 16pt;
+    transition: color .15s ease, transform .15s ease;
+  }
+  ul.list a:hover::after { color: var(--accent); transform: translateY(-50%) translateX(4px); }
+
+  .item-title {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 14pt;
+    letter-spacing: -0.005em;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .item-blurb {
+    color: var(--ink-soft);
+    font-size: 11pt;
+    line-height: 1.5;
+    max-width: 56ch;
+  }
+  .item-meta {
+    font-family: var(--sans);
+    font-size: 8.5pt;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    margin-top: 8px;
+    display: block;
+  }
+
+  footer {
+    text-align: center;
+    padding: 24px 0 40px;
+    font-family: var(--sans);
+    font-size: 9pt;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 640px) {
+    main { margin: 16px; padding: 32px 24px 36px; }
+    h1 { font-size: 26pt; }
+    .lede { font-size: 11.5pt; }
+  }
+</style>
+</head>
+<body>
+
+<main>
+  <p class="eyebrow">A small collection</p>
+  <h1>Useful Prompts</h1>
+  <p class="lede">Shareable, print-ready prompt write-ups. Each page is a complete, copy-pasteable LLM prompt with the design rationale and usage guidance around it.</p>
+
+  <ul class="list">
+    <li>
+      <a href="cv-tuning-prompt.html">
+        <span class="item-title">CV Tuning Prompt</span>
+        <span class="item-blurb">Takes your CV and a target job description and returns a fine-tuned CV that passes both ATS keyword screens and a recruiter's six-second scan — without fabrication. Includes a candid Fit Brief telling you whether to apply at all.</span>
+        <span class="item-meta">Domain-agnostic · Print-ready · ~6 min read</span>
+      </a>
+    </li>
+  </ul>
+</main>
+
+<footer>
+  By <a href="https://github.com/pspesivt">@pspesivt</a> · <a href="https://github.com/pspesivt/useful-prompts">source</a>
+</footer>
+
+</body>
+</html>
